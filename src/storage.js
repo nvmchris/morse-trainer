@@ -1,3 +1,5 @@
+import { DEFAULT_LETTER_GAP_MS } from './keyer.js';
+
 // Saved settings and lesson progress. Storage can be unavailable (private
 // windows, blocked site data), so the app must work without it.
 
@@ -6,6 +8,7 @@ const STORAGE_KEY = 'morse-trainer';
 export const DEFAULTS = Object.freeze({
   wpm: 12,
   sound: true,
+  letterGapMs: DEFAULT_LETTER_GAP_MS,
   completedLessons: [],
 });
 

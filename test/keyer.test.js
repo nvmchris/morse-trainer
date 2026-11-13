@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Keyer, classifyPress, unitMsForWpm, LETTER_GAP_UNITS } from '../src/keyer.js';
+import { Keyer, classifyPress, unitMsForWpm, DEFAULT_LETTER_GAP_MS } from '../src/keyer.js';
 
 const UNIT = unitMsForWpm(12); // 100 ms
 
@@ -23,7 +23,7 @@ test('builds a letter and ends it after a gap', () => {
   keyer.press(200);
   assert.equal(keyer.release(500), '-');
   assert.equal(keyer.poll(550), null);
-  assert.equal(keyer.poll(500 + UNIT * LETTER_GAP_UNITS), '.-');
+  assert.equal(keyer.poll(500 + DEFAULT_LETTER_GAP_MS), '.-');
   assert.equal(keyer.poll(2000), null);
 });
 
@@ -41,4 +41,33 @@ test('ignores repeated presses and stray releases', () => {
   keyer.press(0);
   keyer.press(50);
   assert.equal(keyer.release(300), '-');
+});
+
+test('a slow pause inside a letter does not split it', () => {
+  // Keying L (.-..) with 500 ms pauses between symbols at 12 WPM.
+  const keyer = new Keyer(UNIT);
+  let t = 0;
+  for (const [hold, symbol] of [
+    [100, '.'],
+    [300, '-'],
+    [100, '.'],
+    [100, '.'],
+  ]) {
+    keyer.press(t);
+    assert.equal(keyer.release(t + hold), symbol);
+    t += hold;
+    assert.equal(keyer.poll(t + 500), null);
+    t += 500;
+  }
+  assert.equal(keyer.poll(t - 500 + DEFAULT_LETTER_GAP_MS), '.-..');
+});
+
+test('the letter gap can be changed and reports progress', () => {
+  const keyer = new Keyer(UNIT, 1000);
+  keyer.press(0);
+  keyer.release(100);
+  assert.equal(keyer.pauseProgress(600), 0.5);
+  assert.equal(keyer.poll(1099), null);
+  assert.equal(keyer.poll(1100), '.');
+  assert.equal(keyer.pauseProgress(5000), 0);
 });
