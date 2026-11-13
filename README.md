@@ -17,7 +17,8 @@ and plays it on click.
   directions:
   - _Send_: see text, answer in Morse, either by typing `.` and `-` (space
     between letters) or by keying with the **space bar** (tap = dot, hold =
-    dash, pause = next letter). Works with touch on the on-screen key too.
+    dash, pause = next letter). A slider sets how long a pause ends a
+    letter, and a bar fills up while you pause. Works with touch on the on-screen key too.
   - _Read_: see or only hear Morse, type the text.
 - **Cheatsheet**: every code, searchable, click to hear. Also available as a
   side panel while practising.

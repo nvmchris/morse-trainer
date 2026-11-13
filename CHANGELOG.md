@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Space bar keyer no longer ends a letter after a short pause; the pause
+  that ends a letter is now a setting (default 800 ms) with a progress bar.
+
 ### Added
 
 - Morse tables for letters, numbers, signs and prosigns, with encode/decode.
