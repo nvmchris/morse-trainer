@@ -3,7 +3,7 @@
 import { CATEGORIES, displayText, letterCount } from '../items.js';
 import { LESSONS, lessonPracticeItems } from '../lessons.js';
 import { DIRECTION, buildPool, filterForDirection, pickNext, checkAnswer } from '../practice.js';
-import { Keyer } from '../keyer.js';
+import { Keyer, LETTER_GAP_RANGE_MS } from '../keyer.js';
 import { decode, decodeSymbol } from '../morse.js';
 import { el, codeView } from './dom.js';
 
@@ -38,6 +38,8 @@ function radioGroup(name, options, current, onChange) {
 export function createPractice({
   tone,
   getUnitMs,
+  getLetterGapMs,
+  setLetterGapMs,
   isSoundOn,
   isActive,
   onLessonComplete,
@@ -55,7 +57,7 @@ export function createPractice({
     keyedLetters: [],
     score: { right: 0, total: 0, streak: 0, best: 0 },
   };
-  const keyer = new Keyer(getUnitMs());
+  const keyer = new Keyer(getUnitMs(), getLetterGapMs());
   let advanceTimer = null;
 
   // ---- elements -------------------------------------------------------
@@ -76,7 +78,28 @@ export function createPractice({
     'Hold SPACE (or press here)',
   );
   const keyedView = el('div', { class: 'keyed', 'aria-live': 'polite' });
-  const keyPad = el('div', { class: 'key-pad' }, keyButton, keyedView);
+  const pauseBar = el('div', { class: 'pause-bar' }, el('span'));
+  const letterGapValue = el('output', {}, `${getLetterGapMs()} ms`);
+  const letterGapInput = el('input', {
+    type: 'range',
+    ...LETTER_GAP_RANGE_MS,
+    value: getLetterGapMs(),
+    'aria-label': 'Pause that ends a letter',
+    onInput: () => {
+      const ms = Number(letterGapInput.value);
+      keyer.letterGapMs = ms;
+      letterGapValue.textContent = `${ms} ms`;
+      setLetterGapMs(ms);
+    },
+  });
+  const letterGapSetting = el(
+    'label',
+    { class: 'letter-gap muted' },
+    'Pause that ends a letter: ',
+    letterGapValue,
+    letterGapInput,
+  );
+  const keyPad = el('div', { class: 'key-pad' }, keyButton, pauseBar, keyedView, letterGapSetting);
   const feedback = el('div', { class: 'feedback', 'aria-live': 'polite' });
   const scoreView = el('div', { class: 'score' });
   const lessonBanner = el('div', { class: 'lesson-banner', hidden: true });
@@ -395,7 +418,9 @@ export function createPractice({
 
   setInterval(() => {
     if (!isKeying() || state.answered || !state.item) return;
-    const letter = keyer.poll(performance.now());
+    const now = performance.now();
+    pauseBar.style.setProperty('--progress', keyer.pauseProgress(now));
+    const letter = keyer.poll(now);
     if (!letter) return;
     state.keyedLetters.push(letter);
     renderKeyed();

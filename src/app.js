@@ -36,6 +36,11 @@ function markLessonComplete(index) {
 const practice = createPractice({
   tone,
   getUnitMs,
+  getLetterGapMs: () => state.letterGapMs,
+  setLetterGapMs: (ms) => {
+    state.letterGapMs = ms;
+    saveState(state);
+  },
   isSoundOn,
   isActive: () => activeView === 'practice',
   onLessonComplete: markLessonComplete,

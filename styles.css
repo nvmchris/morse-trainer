@@ -634,3 +634,27 @@ code {
     margin-left: 0;
   }
 }
+
+/* Fills while the key is up; when full, the current letter ends. */
+.pause-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.pause-bar span {
+  display: block;
+  height: 100%;
+  width: calc(var(--progress, 0) * 100%);
+  background: var(--accent);
+}
+
+.letter-gap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
