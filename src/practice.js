@@ -24,11 +24,18 @@ export function filterForDirection(items, direction) {
   return items.filter((item) => !DECODE_EXCLUDED_KINDS.has(item.kind));
 }
 
-// Picks a random item, avoiding an immediate repeat when possible.
-export function pickNext(pool, previous, random = Math.random) {
+// Picks a random item, more likely the higher its weight, avoiding an
+// immediate repeat when possible.
+export function pickNext(pool, previous, random = Math.random, weightOf = () => 1) {
   if (pool.length === 0) return null;
   const candidates = pool.length > 1 ? pool.filter((item) => item !== previous) : pool;
-  return candidates[Math.floor(random() * candidates.length)];
+  const weights = candidates.map(weightOf);
+  let target = random() * weights.reduce((sum, w) => sum + w, 0);
+  for (let i = 0; i < candidates.length; i += 1) {
+    target -= weights[i];
+    if (target < 0) return candidates[i];
+  }
+  return candidates[candidates.length - 1];
 }
 
 export function checkAnswer(item, answer, direction) {
