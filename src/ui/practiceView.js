@@ -196,6 +196,7 @@ export function createPractice({
       'div',
       { class: 'row actions' },
       el('button', { type: 'button', onClick: () => submit() }, 'Check (Enter)'),
+      el('button', { type: 'button', onClick: () => cancelInput() }, 'Cancel (Esc)'),
       el('button', { type: 'button', onClick: () => showHint() }, 'Hint'),
       el('button', { type: 'button', onClick: () => next() }, 'Skip'),
     ),
@@ -308,7 +309,7 @@ export function createPractice({
         el(
           'span',
           { class: 'muted' },
-          'Tap for a dot, hold for a dash, pause between letters. Backspace clears.',
+          'Tap for a dot, hold for a dash, pause between letters. Esc cancels.',
         ),
       );
     }
@@ -408,6 +409,19 @@ export function createPractice({
     if (isSoundOn()) tone.on();
   }
 
+  // Throws away what has been entered so far, without checking it.
+  function cancelInput() {
+    if (!state.item || state.answered) return;
+    keyer.reset();
+    keyButton.classList.remove('down');
+    tone.off();
+    pauseBar.style.setProperty('--progress', 0);
+    state.keyedLetters = [];
+    answerInput.value = '';
+    renderKeyed();
+    if (!isKeying()) answerInput.focus();
+  }
+
   function keyUp() {
     if (!keyer.isDown) return;
     keyer.release(performance.now());
@@ -457,11 +471,14 @@ export function createPractice({
       else submit();
       return;
     }
+    if (e.key === 'Escape' && !e.target.matches?.('input[type=search]')) {
+      e.preventDefault();
+      cancelInput();
+      return;
+    }
     if (e.key === 'Backspace' && isKeying() && !isTextField(e.target)) {
       e.preventDefault();
-      state.keyedLetters = [];
-      keyer.reset();
-      renderKeyed();
+      cancelInput();
     }
   });
 
