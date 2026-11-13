@@ -20,6 +20,11 @@ and plays it on click.
     dash, pause = next letter). A slider sets how long a pause ends a
     letter, and a bar fills up while you pause. Works with touch on the on-screen key too.
   - _Read_: see or only hear Morse, type the text.
+- **Mastery scores**: every item has a 0–100% "known" score. A right answer
+  moves it 15% of the way to 100%, a wrong or hinted one 35% of the way to 0%,
+  so one mistake on a known item takes about 9 right answers in a row to
+  recover. Items under 90% come up 3–10× as often as known ones (the weaker,
+  the more often). Scores show after each answer and in the cheatsheet.
 - **Cheatsheet**: every code, searchable, click to hear. Also available as a
   side panel while practising.
 - Adjustable speed (5–35 WPM) and sound on/off, saved in the browser.

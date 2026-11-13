@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Mastery score (0–100%) per item: right answers raise it slowly, wrong or
+  hinted answers drop it sharply. Items under 90% come up 3–10× as often as
+  known ones. Shown after each answer, in the cheatsheet and in the score line.
 - Cancel button and Esc key in Practice to clear the current answer.
 
 ### Fixed

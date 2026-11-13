@@ -5,6 +5,7 @@ import { LESSONS, lessonPracticeItems } from '../lessons.js';
 import { DIRECTION, buildPool, filterForDirection, pickNext, checkAnswer } from '../practice.js';
 import { Keyer, LETTER_GAP_RANGE_MS } from '../keyer.js';
 import { decode, decodeSymbol } from '../morse.js';
+import { isKnown, selectionWeight, toPercent } from '../mastery.js';
 import { el, codeView } from './dom.js';
 
 const INPUT = Object.freeze({ TYPE: 'type', KEY: 'key' });
@@ -41,6 +42,8 @@ export function createPractice({
   getLetterGapMs,
   setLetterGapMs,
   isSoundOn,
+  getScore,
+  recordResult,
   isActive,
   onLessonComplete,
   cheatsheet,
@@ -226,7 +229,9 @@ export function createPractice({
   function next() {
     clearTimeout(advanceTimer);
     tone.stop();
-    state.item = pickNext(currentPool(), state.item);
+    state.item = pickNext(currentPool(), state.item, Math.random, (item) =>
+      selectionWeight(getScore(item)),
+    );
     state.answered = false;
     state.hinted = false;
     state.keyedLetters = [];
@@ -318,7 +323,11 @@ export function createPractice({
   function renderScore() {
     const { right, total, streak, best } = state.score;
     const percent = total ? Math.round((right / total) * 100) : 0;
-    scoreView.textContent = `Right ${right} / ${total} (${percent}%) · Streak ${streak} · Best ${best}`;
+    const pool = currentPool();
+    const known = pool.filter((item) => isKnown(getScore(item))).length;
+    scoreView.textContent =
+      `Right ${right} / ${total} (${percent}%) · Streak ${streak} · Best ${best}` +
+      ` · Known (≥90%) ${known} / ${pool.length} in this set`;
   }
 
   function currentAnswer() {
@@ -341,8 +350,11 @@ export function createPractice({
     } else {
       score.streak = 0;
     }
+    const before = getScore(item);
+    recordResult(item, correct);
     renderScore();
     showFeedback(correct, answer);
+    feedback.append(masteryLine(item, before, getScore(item)));
 
     if (correct && state.lesson && score.streak >= LESSON_PASS_STREAK) {
       onLessonComplete(state.lesson.index);
@@ -355,6 +367,17 @@ export function createPractice({
     } else {
       playItem();
     }
+  }
+
+  function masteryLine(item, before, after) {
+    const from = before === undefined ? 'new' : `${toPercent(before)}%`;
+    return el(
+      'div',
+      { class: 'mastery-line' },
+      el('span', {}, `${displayText(item)} known: ${from} → ${toPercent(after)}%`),
+      el('span', { class: 'mastery-bar', style: `--mastery: ${after}` }, el('span')),
+      isKnown(after) ? el('span', {}, '✓ known') : null,
+    );
   }
 
   function showFeedback(correct, answer) {
