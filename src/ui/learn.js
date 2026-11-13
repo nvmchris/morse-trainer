@@ -39,7 +39,7 @@ function introCard() {
         'li',
         {},
         el('strong', {}, 'Type: '),
-        'type . and - , a space between letters, and / between words. Press Enter to check.',
+        'type . and - , a space between letters, and / between words. Press Enter to check, or Esc to cancel and start again.',
       ),
       el(
         'li',
