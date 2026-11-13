@@ -1,0 +1,25 @@
+{
+  "name": "morse-trainer",
+  "version": "0.1.0",
+  "description": "Browser-based Morse code trainer: learn, practise and look up codes.",
+  "type": "module",
+  "private": true,
+  "author": "nvmchris",
+  "license": "MIT",
+  "repository": "github:nvmchris/morse-trainer",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
+  }
+}
