@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Cancel button and Esc key in Practice to clear the current answer.
+
 ### Fixed
 
 - Space bar keyer no longer ends a letter after a short pause; the pause
