@@ -1,0 +1,636 @@
+:root {
+  --bg: #f6f3ee;
+  --surface: #ffffff;
+  --surface-2: #efe9e0;
+  --text: #1f1d1a;
+  --muted: #6b655c;
+  --border: #ddd5c8;
+  --accent: #c9761a;
+  --accent-text: #ffffff;
+  --good: #2f7d4a;
+  --good-bg: #e3f2e7;
+  --bad: #b2382e;
+  --bad-bg: #f8e3e0;
+  --hint-bg: #fbf0d9;
+  --radius: 12px;
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171614;
+    --surface: #211f1c;
+    --surface-2: #2c2925;
+    --text: #ece6dc;
+    --muted: #a39b8f;
+    --border: #3a3631;
+    --accent: #e8a33d;
+    --accent-text: #1b1306;
+    --good: #7cc995;
+    --good-bg: #1d3325;
+    --bad: #f08a7e;
+    --bad-bg: #3b201d;
+    --hint-bg: #3a2f17;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    16px/1.5 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+a {
+  color: var(--accent);
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button.primary,
+button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input[type='text'],
+input[type='search'] {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---- layout ---- */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 0.75rem 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand-mark {
+  color: var(--accent);
+  font-family: var(--mono);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tabs a {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.tabs a[aria-current='page'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+  font-size: 0.9rem;
+}
+
+.settings label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 16px;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+/* ---- dot/dash shapes ---- */
+.code {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+  --size: 8px;
+}
+
+.code.large {
+  --size: 14px;
+  gap: 7px;
+}
+
+.code .dot {
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.code .dash {
+  width: calc(var(--size) * 3);
+  height: var(--size);
+  border-radius: calc(var(--size) / 2);
+  background: var(--accent);
+}
+
+.code .gap {
+  width: calc(var(--size) * 1.5);
+}
+
+.code .word-gap {
+  width: calc(var(--size) * 3);
+}
+
+code {
+  font-family: var(--mono);
+}
+
+/* ---- segmented controls and chips ---- */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.segmented label,
+.chip {
+  cursor: pointer;
+}
+
+.segmented input,
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented span {
+  display: block;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.segmented input:checked + span {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.segmented input:focus-visible + span,
+.chip input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.chips {
+  margin-top: 0.75rem;
+}
+
+.chip span {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.chip input:checked + span {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.chip input:checked + span::before {
+  content: '✓ ';
+  color: var(--accent);
+}
+
+/* ---- practice ---- */
+.practice-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.practice-layout:has(.sheet-panel:not([hidden])) {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+}
+
+.trainer {
+  margin-bottom: 0;
+}
+
+.lesson-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 0 1rem;
+  text-align: center;
+}
+
+.prompt-main {
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.prompt-text {
+  font-size: clamp(2.5rem, 9vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-family: var(--mono);
+  overflow-wrap: anywhere;
+}
+
+.prompt-note {
+  min-height: 1.5em;
+  font-family: var(--mono);
+}
+
+.answer {
+  margin: 0.5rem 0 1rem;
+}
+
+.answer-input {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  text-align: center;
+  letter-spacing: 0.15em;
+}
+
+.key-pad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.key-button {
+  padding: 1.25rem;
+  font-size: 1.05rem;
+  border-radius: var(--radius);
+  user-select: none;
+  touch-action: none;
+}
+
+.key-button.down {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.keyed {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  align-items: center;
+}
+
+.keyed-letter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  font-family: var(--mono);
+}
+
+.keyed-letter.pending {
+  opacity: 0.6;
+}
+
+.feedback {
+  min-height: 2.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.feedback:empty {
+  padding: 0;
+}
+
+.feedback.good {
+  background: var(--good-bg);
+  color: var(--good);
+}
+
+.feedback.bad {
+  background: var(--bad-bg);
+}
+
+.feedback.bad strong {
+  color: var(--bad);
+}
+
+.feedback.hint {
+  background: var(--hint-bg);
+  flex-direction: row;
+  gap: 0.4rem;
+}
+
+.correct-answer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.lesson-passed {
+  font-weight: 700;
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.score {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.sheet-panel {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: sticky;
+  top: 80px;
+  margin-bottom: 0;
+}
+
+/* ---- cheatsheet ---- */
+.sheet-search {
+  margin-bottom: 0.5rem;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+.cheatsheet.compact .sheet-grid {
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+}
+
+.sheet-cell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 0.6rem;
+  text-align: left;
+  background: var(--surface);
+}
+
+.sheet-char {
+  grid-row: span 2;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.3rem;
+  min-width: 1.4em;
+}
+
+.sheet-text {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.cheatsheet.compact .sheet-cell {
+  padding: 0.35rem 0.5rem;
+  column-gap: 0.4rem;
+}
+
+.cheatsheet.compact .code {
+  --size: 5px;
+  gap: 3px;
+}
+
+.cheatsheet.compact .sheet-char {
+  font-size: 1rem;
+}
+
+.cheatsheet.compact .sheet-text {
+  display: none;
+}
+
+/* ---- learn ---- */
+.rules {
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.rules th,
+.rules td {
+  text-align: left;
+  padding: 0.25rem 1.25rem 0.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.rules th {
+  font-weight: 500;
+}
+
+.lesson-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.lesson-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  text-align: left;
+  background: var(--surface);
+  padding: 0.75rem 0.9rem;
+}
+
+.lesson-button.done {
+  border-color: var(--good);
+}
+
+.lesson-number {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.lesson-title {
+  font-weight: 600;
+}
+
+.lesson-chars {
+  font-family: var(--mono);
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.lesson-check {
+  font-size: 0.8rem;
+  color: var(--good);
+}
+
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.learn-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  background: var(--surface);
+}
+
+.learn-char {
+  font-family: var(--mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.learn-code {
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+.learn-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .practice-layout:has(.sheet-panel:not([hidden])) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sheet-panel {
+    position: static;
+    max-height: none;
+  }
+
+  .settings {
+    margin-left: 0;
+  }
+}
