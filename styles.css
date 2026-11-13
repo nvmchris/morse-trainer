@@ -658,3 +658,57 @@ code {
   gap: 0.5rem;
   font-size: 0.9rem;
 }
+
+/* ---- mastery ---- */
+.mastery-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.mastery-bar,
+.sheet-bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.mastery-bar {
+  width: 120px;
+}
+
+.mastery-bar span,
+.sheet-bar span {
+  display: block;
+  height: 100%;
+  width: calc(var(--mastery, 0) * 100%);
+  background: var(--accent);
+}
+
+.sheet-cell {
+  position: relative;
+  overflow: hidden;
+}
+
+.sheet-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.sheet-cell:not(.seen) .sheet-bar {
+  display: none;
+}
+
+.sheet-cell.known .sheet-bar span {
+  background: var(--good);
+}

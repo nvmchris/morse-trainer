@@ -1,10 +1,12 @@
 // Grid of every code, grouped by category. Click a cell to hear it.
+// Each cell shows how well the item is known.
 import { CATEGORIES, displayText } from '../items.js';
 import { el, codeView } from './dom.js';
+import { isKnown, toPercent } from '../mastery.js';
 
 const SHEET_CATEGORIES = ['letters', 'numbers', 'signs', 'prosigns'];
 
-export function createCheatsheet({ onPlay, compact = false }) {
+export function createCheatsheet({ onPlay, getScore, compact = false }) {
   const search = el('input', {
     type: 'search',
     class: 'sheet-search',
@@ -12,8 +14,11 @@ export function createCheatsheet({ onPlay, compact = false }) {
     'aria-label': 'Filter cheatsheet',
   });
 
+  const scoreCells = [];
   const sections = SHEET_CATEGORIES.map((key) => {
     const cells = CATEGORIES[key].items.map((item) => {
+      const scoreText = el('span', { class: 'sheet-score' });
+      const scoreBar = el('span', { class: 'sheet-bar' }, el('span'));
       const cell = el(
         'button',
         {
@@ -24,9 +29,11 @@ export function createCheatsheet({ onPlay, compact = false }) {
         },
         el('span', { class: 'sheet-char' }, displayText(item)),
         codeView(item.code),
-        el('span', { class: 'sheet-text' }, item.code),
+        el('span', { class: 'sheet-text' }, item.code, scoreText),
+        scoreBar,
       );
       cell.dataset.search = `${item.text} ${item.code}`.toLowerCase();
+      scoreCells.push({ item, cell, scoreText });
       return cell;
     });
     const section = el(
@@ -51,10 +58,24 @@ export function createCheatsheet({ onPlay, compact = false }) {
     }
   });
 
-  return el(
+  function refresh() {
+    for (const { item, cell, scoreText } of scoreCells) {
+      const score = getScore(item);
+      const seen = score !== undefined;
+      cell.style.setProperty('--mastery', seen ? score : 0);
+      cell.classList.toggle('known', isKnown(score));
+      cell.classList.toggle('seen', seen);
+      scoreText.textContent = seen ? ` · ${toPercent(score)}%` : '';
+      cell.title = `${item.note ? `${item.note}. ` : ''}${seen ? `Known ${toPercent(score)}%` : 'Not practised yet'}`;
+    }
+  }
+
+  const root = el(
     'div',
     { class: `cheatsheet ${compact ? 'compact' : ''}`.trim() },
     search,
     sections.map((s) => s.section),
   );
+  refresh();
+  return { root, refresh };
 }

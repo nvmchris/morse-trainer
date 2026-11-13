@@ -5,6 +5,7 @@ import { loadState, saveState } from './storage.js';
 import { createCheatsheet } from './ui/cheatsheet.js';
 import { createLearn } from './ui/learn.js';
 import { createPractice } from './ui/practiceView.js';
+import { itemKey, updateScore } from './mastery.js';
 
 const VIEWS = ['learn', 'practice', 'cheatsheet'];
 const DEFAULT_VIEW = 'practice';
@@ -26,6 +27,20 @@ function playSequence(items) {
   if (isSoundOn()) tone.play(joined, getUnitMs());
 }
 
+const getScore = (item) => state.scores[itemKey(item)];
+
+function recordResult(item, correct) {
+  const key = itemKey(item);
+  state.scores = { ...state.scores, [key]: updateScore(state.scores[key], correct) };
+  saveState(state);
+  for (const sheet of cheatsheets) sheet.refresh();
+}
+
+const cheatsheets = [
+  createCheatsheet({ onPlay: play, getScore, compact: true }),
+  createCheatsheet({ onPlay: play, getScore }),
+];
+
 function markLessonComplete(index) {
   if (state.completedLessons.includes(index)) return;
   state.completedLessons = [...state.completedLessons, index];
@@ -42,9 +57,11 @@ const practice = createPractice({
     saveState(state);
   },
   isSoundOn,
+  getScore,
+  recordResult,
   isActive: () => activeView === 'practice',
   onLessonComplete: markLessonComplete,
-  cheatsheet: createCheatsheet({ onPlay: play, compact: true }),
+  cheatsheet: cheatsheets[0].root,
 });
 
 const learn = createLearn({
@@ -59,7 +76,7 @@ const learn = createLearn({
 
 document.getElementById('view-learn').append(learn.root);
 document.getElementById('view-practice').append(practice.root);
-document.getElementById('view-cheatsheet').append(createCheatsheet({ onPlay: play }));
+document.getElementById('view-cheatsheet').append(cheatsheets[1].root);
 
 function showView(name) {
   const view = VIEWS.includes(name) ? name : DEFAULT_VIEW;

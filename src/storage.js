@@ -10,6 +10,8 @@ export const DEFAULTS = Object.freeze({
   sound: true,
   letterGapMs: DEFAULT_LETTER_GAP_MS,
   completedLessons: [],
+  // Mastery score (0–1) per item, keyed by itemKey().
+  scores: {},
 });
 
 export function loadState() {
