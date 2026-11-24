@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Applied the shared dark purple and turquoise theme (dark only); the key and current lesson glow turquoise.
+
 ### Fixed
 
 - The dev server listens on `HOST` (default `127.0.0.1`) instead of every
