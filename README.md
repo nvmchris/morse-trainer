@@ -46,7 +46,7 @@ npm start
 ```
 
 Then open http://localhost:8000. Set `PORT` to use another port, e.g.
-`PORT=8123 npm start`.
+`PORT=8123 npm start`. It listens on `HOST` (default `127.0.0.1`).
 
 ## Test
 

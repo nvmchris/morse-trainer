@@ -5,6 +5,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT ?? 8000);
+const HOST = process.env.HOST ?? '127.0.0.1';
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -29,4 +30,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('Not found');
   }
-}).listen(PORT, () => console.log(`Morse Trainer running at http://localhost:${PORT}`));
+}).listen(PORT, HOST, () => console.log(`Morse Trainer running at http://${HOST}:${PORT}`));

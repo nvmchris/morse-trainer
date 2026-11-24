@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The dev server listens on `HOST` (default `127.0.0.1`) instead of every
+  interface, so it no longer clashes with `tailscale serve` on the same port.
+
 ### Added
 
 - Mastery score (0–100%) per item: right answers raise it slowly, wrong or
